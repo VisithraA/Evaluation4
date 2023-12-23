@@ -24,6 +24,9 @@ public class DungeonGame {
 		System.out.println("Position of Monster");
 		int monRow = sc.nextInt();
 		int monCol = sc.nextInt();
+		System.out.println("Position of Trigger:");
+		int trigRow = sc.nextInt();
+		int trigCol = sc.nextInt();
 		System.out.println("Position of Gold:");
 		int goldRow = sc.nextInt();
 		int goldCol = sc.nextInt();
@@ -34,14 +37,25 @@ public class DungeonGame {
 			System.out.println("Gold position is limit exceeded");
 		} else if (monRow > row || monCol > column) {
 			System.out.println("monster position is limit exceeded");
-		} else {
-			int AdventurePath = Math.abs(adRow - goldRow) + Math.abs(adCol - goldCol);
-			int MonsterPath = Math.abs(monRow - goldRow) + Math.abs(monCol - goldCol);
+		} 
+		else if (trigRow > row || trigCol > column) {
+			System.out.println("Trigger position is limit exceeded");
+		} 
+		else {
+			int adventurePath = Math.abs(adRow - goldRow) + Math.abs(adCol - goldCol);
+			int monsterPath = Math.abs(monRow - goldRow) + Math.abs(monCol - goldCol);
 
-			if (MonsterPath < AdventurePath)
-				System.out.println("No Possible solution");
+			if (monsterPath < adventurePath) {
+				//System.out.println("No Possible solution");
+				int advenToTrigPath=Math.abs(adRow-trigRow)+Math.abs(adCol-trigCol);
+				int trigTOGoldPath=Math.abs(trigRow-goldRow)+Math.abs(trigCol-goldCol);
+				
+				System.out.println("Minimum number of Steps "+(advenToTrigPath+trigTOGoldPath));
+			}
+				
 			else {
-				game.PrintPath(adRow, adCol, goldRow, goldCol);
+				//game.PrintPath(adRow, adCol, goldRow, goldCol);
+				System.out.println("Minimum number of Steps "+adventurePath);
 			}
 
 		}
