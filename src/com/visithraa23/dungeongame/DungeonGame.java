@@ -30,6 +30,5 @@ public class DungeonGame {
 			int res = Math.abs(adRow - goldRow) + Math.abs(adCol - goldCol);
 			System.out.println("Minimum Number of Steps " + res);
 		}
-
 	}
 }
