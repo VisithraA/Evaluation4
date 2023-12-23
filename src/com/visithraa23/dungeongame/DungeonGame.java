@@ -22,7 +22,7 @@ public class DungeonGame {
 		int monRow=sc.nextInt();
 		int monCol=sc.nextInt();
 		System.out.println("Position of Gold:");
-		int goldRow = sc.nextInt();
+		int goldRow = sc.nextInt();        
 		int goldCol = sc.nextInt();
 
 		if (adRow > row || adCol > column) {
