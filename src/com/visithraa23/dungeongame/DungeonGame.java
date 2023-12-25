@@ -26,13 +26,12 @@ public class DungeonGame {
 		System.out.println("Position of Monster");
 		int monRow = sc.nextInt();
 		int monCol = sc.nextInt();
-//		System.out.println("Position of Trigger:");
-//		int trigRow = sc.nextInt();
-//		int trigCol = sc.nextInt();
+		System.out.println("Position of Trigger:");
+		int trigRow = sc.nextInt();
+		int trigCol = sc.nextInt();
 		System.out.println("Position of Gold:");
 		int goldRow = sc.nextInt();
 		int goldCol = sc.nextInt();
-
 		System.out.println("Enter the number of pits");
 		int pits = sc.nextInt();
 		for (int i = 0; i < pits; i++) {
@@ -51,16 +50,13 @@ public class DungeonGame {
 			System.out.println("Adventure position is limit exceeded");
 		} else if (goldRow > row || goldCol > column || goldRow <= 0 || goldCol <= 0) {
 			System.out.println("Gold position is limit exceeded");
-		}
-		else if (monRow > row || monCol > column||monRow<=0||monCol<=0) {
+		} else if (monRow > row || monCol > column || monRow <= 0 || monCol <= 0) {
 			System.out.println("monster position is limit exceeded");
-		} 
-//		else if (trigRow > row || trigCol > column||trigRow<=0||trigCol<=0) {
-//			System.out.println("Trigger position is limit exceeded");
-//		}
-		else {
+		} else if (trigRow > row || trigCol > column || trigRow <= 0 || trigCol <= 0) {
+			System.out.println("Trigger position is limit exceeded");
+		} else {
 //			int adventurePath = Math.abs(adRow - goldRow) + Math.abs(adCol - goldCol);
-			int monsterPath = Math.abs(monRow-1 - goldRow) + Math.abs(monCol -1- goldCol);
+			int monsterPath = Math.abs(monRow - 1 - goldRow) + Math.abs(monCol - 1 - goldCol);
 
 //			if (monsterPath < adventurePath) {
 //				// System.out.println("No Possible solution");
@@ -75,11 +71,13 @@ public class DungeonGame {
 //				// game.PrintPath(adRow, adCol, goldRow, goldCol);
 //				System.out.println("Minimum number of Steps " + adventurePath);
 //			}
-			game.findMinPath(row - 1, column - 1, adRow - 1, adCol - 1, goldRow - 1, goldCol - 1, arr,monsterPath);
+			game.findMinPath(row - 1, column - 1, adRow - 1, adCol - 1, goldRow - 1, goldCol - 1, arr, monsterPath,
+					trigRow - 1, trigCol - 1);
 		}
 	}
 
-	private void findMinPath(int row, int col, int adRow, int adCol, int goldRow, int goldCol, int[][] arr, int monsterPath) {
+	private void findMinPath(int row, int col, int adRow, int adCol, int goldRow, int goldCol, int[][] arr,
+			int monsterPath, int trigRow, int trigCol) {
 		if ((adRow + 1 < arr.length && arr[adRow + 1][adCol] == 1) && (adRow - 1 >= 0 && arr[adRow - 1][adCol] == 1)
 				&& (adCol + 1 < arr[0].length && arr[adRow][adCol + 1] == 1)
 				&& (adCol - 1 >= 0 && arr[adRow][adCol - 1] == 1))
@@ -90,73 +88,88 @@ public class DungeonGame {
 				leftToRight(arr, adRow, adCol, goldRow, goldCol, list);
 			else
 				rightToLeft(arr, adRow, adCol, goldRow, goldCol, list);
-			
-			if(list.size()<monsterPath)
+			if (list.size() < monsterPath)
 				System.out.println("Minimum Number of Steps " + (list.size() - 1));
-			else
-				System.out.println("No Possible solution");
+			else {
+				List<List<Integer>> list2 = new ArrayList<>();
+				if (adRow < trigRow) {
+					leftToRight(arr, adRow, adCol, trigRow, trigCol, list2);
+					if (trigRow < goldRow)
+						leftToRight(arr, trigRow, trigCol, goldRow, goldCol, list2);
+					else
+						rightToLeft(arr, trigRow, trigCol, goldRow, goldCol, list2);
+				} else {
+					rightToLeft(arr, adRow, adCol, trigRow, trigCol, list2);
+					if (trigRow < goldRow)
+						leftToRight(arr, trigRow, trigCol, goldRow, goldCol, list2);
+					else
+						rightToLeft(arr, trigRow, trigCol, goldRow, goldCol, list2);
+				}
+				System.out.println("Minimum Number of Steps " + list2.size());
+			}
 		}
 
 	}
 
-	private void leftToRight(int[][] arr, int adRow, int adCol, int goldRow, int goldCol, List<List<Integer>> list) {
+	private void leftToRight(int[][] arr, int startRow, int startCol, int endRow, int endCol,
+			List<List<Integer>> list) {
 		List<Integer> li;
-		while (adCol < arr[0].length) {
+		while (startCol < arr[0].length) {
 			li = new ArrayList<>();
-			li.add(adRow + 1);
-			li.add(adCol + 1);
+			li.add(startRow + 1);
+			li.add(startCol + 1);
 			if (!list.contains(li))
 				list.add(li);
-			if (adCol == goldCol)
+			if (startCol == endCol)
 				break;
-			else if (adCol < goldCol) {
-				if (adCol + 1 < arr[0].length && arr[adRow][adCol + 1] != 1)
-					adCol++;
-				else if (adRow - 1 >= 0 && arr[adRow - 1][adCol] != 1)
-					adRow--;
-				else if (adRow + 1 < arr.length && arr[adRow + 1][adCol] != 1)
-					adRow++;
-				else if (adCol - 1 >= 0 && arr[adRow][adCol - 1] != 1)
-					adCol--;
+			else if (startCol < endCol) {
+				if (startCol + 1 < arr[0].length && arr[startRow][startCol + 1] != 1)
+					startCol++;
+				else if (startRow - 1 >= 0 && arr[startRow - 1][startCol] != 1)
+					startRow--;
+				else if (startRow + 1 < arr.length && arr[startRow + 1][startCol] != 1)
+					startRow++;
+				else if (startCol - 1 >= 0 && arr[startRow][startCol - 1] != 1)
+					startCol--;
 			}
 
 			else {
-				if (adCol - 1 >= 0 && arr[adRow][adCol - 1] != 1)
-					adCol--;
-				else if (adRow - 1 >= 0 && arr[adRow - 1][adCol] != 1)
-					adRow--;
-				else if (adRow + 1 < arr.length && arr[adRow + 1][adCol] != 1)
-					adRow++;
-				else if (adCol + 1 < arr[0].length && arr[adRow][adCol + 1] != 1)
-					adCol++;
+				if (startCol - 1 >= 0 && arr[startRow][startCol - 1] != 1)
+					startCol--;
+				else if (startRow - 1 >= 0 && arr[startRow - 1][startCol] != 1)
+					startRow--;
+				else if (startRow + 1 < arr.length && arr[startRow + 1][startCol] != 1)
+					startRow++;
+				else if (startCol + 1 < arr[0].length && arr[startRow][startCol + 1] != 1)
+					startCol++;
 			}
 		}
-		while (adRow < arr.length) {
+		while (startRow < arr.length) {
 			li = new ArrayList<>();
-			li.add(adRow + 1);
-			li.add(adCol + 1);
+			li.add(startRow + 1);
+			li.add(startCol + 1);
 			if (!list.contains(li))
 				list.add(li);
-			if (adRow == goldRow)
+			if (startRow == endRow)
 				break;
-			else if (adRow < goldRow) {
-				if (adRow + 1 < arr.length && arr[adRow + 1][adCol] != 1)
-					adRow++;
-				else if (adCol + 1 < arr[0].length && arr[adRow][adCol + 1] != 1)
-					adCol++;
-				else if (adCol - 1 >= 0 && arr[adRow][adCol - 1] != 1)
-					adCol--;
-				else if (adRow - 1 >= 0 && arr[adRow - 1][adCol] != 0)
-					adRow--;
+			else if (startRow < endRow) {
+				if (startRow + 1 < arr.length && arr[startRow + 1][startCol] != 1)
+					startRow++;
+				else if (startCol + 1 < arr[0].length && arr[startRow][startCol + 1] != 1)
+					startCol++;
+				else if (startCol - 1 >= 0 && arr[startRow][startCol - 1] != 1)
+					startCol--;
+				else if (startRow - 1 >= 0 && arr[startRow - 1][startCol] != 0)
+					startRow--;
 			} else {
-				if (adRow - 1 >= 0 && arr[adRow - 1][adCol] != 1)
-					adRow--;
-				else if (adCol + 1 < arr[0].length && arr[adRow][adCol + 1] != 1)
-					adCol++;
-				else if (adCol - 1 >= 0 && arr[adRow][adCol - 1] != 1)
-					adCol--;
-				else if (adRow + 1 < arr.length && arr[adRow + 1][adCol] != 1)
-					adRow++;
+				if (startRow - 1 >= 0 && arr[startRow - 1][startCol] != 1)
+					startRow--;
+				else if (startCol + 1 < arr[0].length && arr[startRow][startCol + 1] != 1)
+					startCol++;
+				else if (startCol - 1 >= 0 && arr[startRow][startCol - 1] != 1)
+					startCol--;
+				else if (startRow + 1 < arr.length && arr[startRow + 1][startCol] != 1)
+					startRow++;
 			}
 		}
 
@@ -180,7 +193,7 @@ public class DungeonGame {
 					adCol++;
 				else if (adCol - 1 >= 0 && arr[adRow][adCol - 1] != 1)
 					adCol--;
-				else if(adRow-1>=0&&arr[adRow-1][adCol]!=1)
+				else if (adRow - 1 >= 0 && arr[adRow - 1][adCol] != 1)
 					adRow--;
 			}
 			if (goldRow < adRow) {
@@ -190,7 +203,7 @@ public class DungeonGame {
 					adCol++;
 				else if (adCol - 1 >= 0 && arr[adRow][adCol - 1] != 1)
 					adCol--;
-				else if(adRow+1<arr.length&&arr[adRow+1][adCol]!=1)
+				else if (adRow + 1 < arr.length && arr[adRow + 1][adCol] != 1)
 					adRow++;
 			}
 		}
@@ -209,7 +222,7 @@ public class DungeonGame {
 					adRow--;
 				else if (adRow + 1 < arr.length && arr[adRow + 1][adCol] != 1)
 					adRow++;
-				else if(adCol-1>=0&&arr[adRow][adCol-1]!=0)
+				else if (adCol - 1 >= 0 && arr[adRow][adCol - 1] != 0)
 					adCol--;
 			}
 
@@ -220,7 +233,7 @@ public class DungeonGame {
 					adRow--;
 				else if (adRow + 1 < arr.length && arr[adRow + 1][adCol] != 1)
 					adRow++;
-				else if(adCol+1<arr[0].length&&arr[adRow][adCol+1]!=1)
+				else if (adCol + 1 < arr[0].length && arr[adRow][adCol + 1] != 1)
 					adCol++;
 			}
 		}
