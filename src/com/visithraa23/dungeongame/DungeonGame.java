@@ -23,10 +23,9 @@ public class DungeonGame {
 		System.out.println("Position of Adventurer:");
 		int adRow = sc.nextInt();
 		int adCol = sc.nextInt();
-
-//		System.out.println("Position of Monster");
-//		int monRow = sc.nextInt();
-//		int monCol = sc.nextInt();
+		System.out.println("Position of Monster");
+		int monRow = sc.nextInt();
+		int monCol = sc.nextInt();
 //		System.out.println("Position of Trigger:");
 //		int trigRow = sc.nextInt();
 //		int trigCol = sc.nextInt();
@@ -53,14 +52,15 @@ public class DungeonGame {
 		} else if (goldRow > row || goldCol > column || goldRow <= 0 || goldCol <= 0) {
 			System.out.println("Gold position is limit exceeded");
 		}
-//		else if (monRow > row || monCol > column||monRow<=0||monCol<=0) {
-//			System.out.println("monster position is limit exceeded");
-//		} else if (trigRow > row || trigCol > column||trigRow<=0||trigCol<=0) {
+		else if (monRow > row || monCol > column||monRow<=0||monCol<=0) {
+			System.out.println("monster position is limit exceeded");
+		} 
+//		else if (trigRow > row || trigCol > column||trigRow<=0||trigCol<=0) {
 //			System.out.println("Trigger position is limit exceeded");
 //		}
 		else {
 //			int adventurePath = Math.abs(adRow - goldRow) + Math.abs(adCol - goldCol);
-			// int monsterPath = Math.abs(monRow - goldRow) + Math.abs(monCol - goldCol);
+			int monsterPath = Math.abs(monRow-1 - goldRow) + Math.abs(monCol -1- goldCol);
 
 //			if (monsterPath < adventurePath) {
 //				// System.out.println("No Possible solution");
@@ -75,13 +75,11 @@ public class DungeonGame {
 //				// game.PrintPath(adRow, adCol, goldRow, goldCol);
 //				System.out.println("Minimum number of Steps " + adventurePath);
 //			}
-			arr[adRow - 1][adCol - 1] = 2;
-			arr[goldRow - 1][goldCol - 1] = 3;
-			game.findMinPath(row - 1, column - 1, adRow - 1, adCol - 1, goldRow - 1, goldCol - 1, arr);
+			game.findMinPath(row - 1, column - 1, adRow - 1, adCol - 1, goldRow - 1, goldCol - 1, arr,monsterPath);
 		}
 	}
 
-	private void findMinPath(int row, int col, int adRow, int adCol, int goldRow, int goldCol, int[][] arr) {
+	private void findMinPath(int row, int col, int adRow, int adCol, int goldRow, int goldCol, int[][] arr, int monsterPath) {
 		if ((adRow + 1 < arr.length && arr[adRow + 1][adCol] == 1) && (adRow - 1 >= 0 && arr[adRow - 1][adCol] == 1)
 				&& (adCol + 1 < arr[0].length && arr[adRow][adCol + 1] == 1)
 				&& (adCol - 1 >= 0 && arr[adRow][adCol - 1] == 1))
@@ -92,8 +90,11 @@ public class DungeonGame {
 				leftToRight(arr, adRow, adCol, goldRow, goldCol, list);
 			else
 				rightToLeft(arr, adRow, adCol, goldRow, goldCol, list);
-			System.out.println(list);
-			System.out.println("Minimum Number of Steps " + (list.size() - 1));
+			
+			if(list.size()<monsterPath)
+				System.out.println("Minimum Number of Steps " + (list.size() - 1));
+			else
+				System.out.println("No Possible solution");
 		}
 
 	}
